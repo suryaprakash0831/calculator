@@ -1,0 +1,83 @@
+name: Custom Calculator Builder
+
+on:
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: "Choose UI theme"
+        required: true
+        default: "dark"
+        type: choice
+        options:
+          - dark
+          - light
+          - glass
+      features:
+        description: "Enable optional features (comma separated)"
+        required: false
+        default: "animations,keyboard"
+      version:
+        description: "Tag this build version"
+        required: false
+        default: "v1.0"
+      deploy:
+        description: "Deploy to GitHub Pages?"
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Show selected inputs
+        run: |
+          echo "Theme: ${{ github.event.inputs.theme }}"
+          echo "Features: ${{ github.event.inputs.features }}"
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Deploy: ${{ github.event.inputs.deploy }}"
+
+      - name: Apply theme selection
+        run: |
+          case "${{ github.event.inputs.theme }}" in
+            dark)
+              cp themes/dark.css styles.css
+              ;;
+            light)
+              cp themes/light.css styles.css
+              ;;
+            glass)
+              cp themes/glass.css styles.css
+              ;;
+          esac
+
+      - name: Enable selected features
+        run: |
+          FEATURES="${{ github.event.inputs.features }}"
+          if echo "$FEATURES" | grep -qi "animations"; then
+            echo "Enabling animations..."
+            cp features/animations.js script-animations.js
+          fi
+          if echo "$FEATURES" | grep -qi "keyboard"; then
+            echo "Enabling keyboard support..."
+            cp features/keyboard.js script-keyboard.js
+          fi
+          if echo "$FEATURES" | grep -qi "ripple"; then
+            echo "Enabling ripple effects..."
+            cp features/ripple.js script-ripple.js
+          fi
+
+      - name: Tag the build
+        run: |
+          echo "Tagging version ${{ github.event.inputs.version }}"
+          echo "${{ github.event.inputs.version }}" > VERSION.txt
+
+      - name: Deploy to GitHub Pages
+        if: ${{ github.event.inputs.deploy == 'true' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
