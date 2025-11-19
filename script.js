@@ -82,4 +82,24 @@ function openTab(tabName) {
 // GRAPHING LOGIC
 function plotGraph() {
     const canvas = document.getElementById("graphCanvas");
-    const ctx =
+    const ctx = canvas.getContext("2d");
+    const input = document.getElementById("graphInput").value;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "#00ff9d";
+    ctx.beginPath();
+
+    for (let x = 0; x < canvas.width; x++) {
+        let realX = (x - canvas.width / 2) / 30;
+
+        try {
+            let y = eval(input.replace(/x/g, realX));
+            let plotY = canvas.height / 2 - y * 30;
+
+            ctx.lineTo(x, plotY);
+        } catch {}
+    }
+
+    ctx.stroke();
+}
