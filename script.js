@@ -1,43 +1,85 @@
+// SOUND EFFECT
+const clickSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-modern-click-box-1120.wav");
+
+// BUTTON PRESS
 function press(value) {
+    playSound();
+    ripple(event);
     document.getElementById("display").value += value;
 }
 
+// EVALUATION + HISTORY
 function calculate() {
-    let expression = document.getElementById("display").value;
+    playSound();
+    let display = document.getElementById("display");
+    let exp = display.value;
 
     try {
-        expression = expression.replace(/sin/g, "Math.sin");
-        expression = expression.replace(/cos/g, "Math.cos");
-        expression = expression.replace(/tan/g, "Math.tan");
+        exp = exp.replace(/sin/g, "Math.sin");
+        exp = exp.replace(/cos/g, "Math.cos");
+        exp = exp.replace(/tan/g, "Math.tan");
 
-        document.getElementById("display").value = eval(expression);
-    } catch (e) {
-        document.getElementById("display").value = "Error";
+        let result = eval(exp);
+        display.value = result;
+
+        addHistory(exp + " = " + result);
+    } catch {
+        display.value = "Error";
     }
 }
 
+// CLEAR DISPLAY
 function clearDisplay() {
+    playSound();
     document.getElementById("display").value = "";
 }
 
-/* KEYBOARD SUPPORT */
+// HISTORY ADD
+function addHistory(entry) {
+    let li = document.createElement("li");
+    li.textContent = entry;
+    document.getElementById("historyList").appendChild(li);
+}
+
+// THEME SWITCH
+document.getElementById("themeSwitch").addEventListener("change", () => {
+    document.body.classList.toggle("light-mode");
+});
+
+// RIPPLE EFFECT
+function ripple(e) {
+    const button = e.target;
+    const circle = document.createElement("span");
+    circle.classList.add("ripple");
+    button.appendChild(circle);
+
+    setTimeout(() => circle.remove(), 600);
+}
+
+// SOUND
+function playSound() {
+    clickSound.currentTime = 0;
+    clickSound.play();
+}
+
+// KEYBOARD SUPPORT
 document.addEventListener("keydown", function (e) {
     const allowed = "0123456789+-*/().";
 
-    if (allowed.includes(e.key)) {
-        press(e.key);
-    }
-
+    if (allowed.includes(e.key)) press(e.key);
     if (e.key === "Enter") calculate();
-    if (e.key === "Backspace") {
-        let display = document.getElementById("display");
-        display.value = display.value.slice(0, -1);
-    }
 });
 
-/* THEME SWITCH */
-const themeSwitch = document.getElementById("themeSwitch");
+// TABS
+function openTab(tabName) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-button").forEach(t => t.classList.remove("active"));
 
-themeSwitch.addEventListener("change", () => {
-    document.body.classList.toggle("light-mode");
-});
+    document.getElementById(tabName).classList.add("active");
+    event.target.classList.add("active");
+}
+
+// GRAPHING LOGIC
+function plotGraph() {
+    const canvas = document.getElementById("graphCanvas");
+    const ctx =
