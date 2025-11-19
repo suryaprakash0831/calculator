@@ -6,43 +6,46 @@
     <title>Scientific Calculator</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="calculator">
+    <div class="theme-toggle">
+        <label class="switch">
+            <input type="checkbox" id="themeSwitch">
+            <span class="slider"></span>
+        </label>
+        <span class="mode-label">Light / Dark</span>
+    </div>
+
+    <div class="calculator glass">
         <input type="text" id="display" disabled>
 
         <div class="buttons">
-            <!-- Scientific Row -->
             <button onclick="press('sin(')">sin</button>
             <button onclick="press('cos(')">cos</button>
             <button onclick="press('tan(')">tan</button>
             <button onclick="press('Math.log(')">ln</button>
             <button onclick="press('Math.sqrt(')">√</button>
 
-            <!-- Row 1 -->
             <button onclick="press('7')">7</button>
             <button onclick="press('8')">8</button>
             <button onclick="press('9')">9</button>
             <button onclick="press('/')">/</button>
 
-            <!-- Row 2 -->
             <button onclick="press('4')">4</button>
             <button onclick="press('5')">5</button>
             <button onclick="press('6')">6</button>
             <button onclick="press('*')">*</button>
 
-            <!-- Row 3 -->
             <button onclick="press('1')">1</button>
             <button onclick="press('2')">2</button>
             <button onclick="press('3')">3</button>
             <button onclick="press('-')">-</button>
 
-            <!-- Row 4 -->
             <button onclick="press('0')">0</button>
             <button onclick="press('.')">.</button>
             <button onclick="calculate()">=</button>
             <button onclick="press('+')">+</button>
 
-            <!-- Clear -->
             <button class="clear" onclick="clearDisplay()">C</button>
         </div>
     </div>
